@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Watchtower — Swords of Secret Feedback</title>
+<meta name="description" content="A running status board of player-reported bugs, UI feedback, and feature requests for Swords of Secret.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#f6f0e4;
+    --paper-raised:#efe6d2;
+    --ink:#221c2c;
+    --ink-soft:#655d72;
+    --line:rgba(34,28,44,0.14);
+    --accent:#c9852c;
+    --accent-2:#4c5c52;
+    --green:#3f7a52;
+    --green-bg:rgba(63,122,82,0.14);
+    --amber-bg:rgba(201,133,44,0.16);
+    --red:#b1493c;
+    --red-bg:rgba(177,73,60,0.14);
+    --slate:#4c5c52;
+    --slate-bg:rgba(76,92,82,0.14);
+    --blue:#3a6d8c;
+    --blue-bg:rgba(58,109,140,0.14);
+    --shadow:0 1px 2px rgba(34,28,44,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#161320;
+      --paper-raised:#1f1b2c;
+      --ink:#ece7da;
+      --ink-soft:#b1a8c2;
+      --line:rgba(236,231,218,0.14);
+      --accent:#e2a34d;
+      --accent-2:#8fae9c;
+      --green:#6fbf8a;
+      --green-bg:rgba(111,191,138,0.16);
+      --amber-bg:rgba(226,163,77,0.14);
+      --red:#e08575;
+      --red-bg:rgba(224,133,117,0.16);
+      --slate:#8fae9c;
+      --slate-bg:rgba(143,174,156,0.16);
+      --blue:#7fb3d5;
+      --blue-bg:rgba(127,179,213,0.16);
+      --shadow:0 1px 2px rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#161320;
+    --paper-raised:#1f1b2c;
+    --ink:#ece7da;
+    --ink-soft:#b1a8c2;
+    --line:rgba(236,231,218,0.14);
+    --accent:#e2a34d;
+    --accent-2:#8fae9c;
+    --green:#6fbf8a;
+    --green-bg:rgba(111,191,138,0.16);
+    --amber-bg:rgba(226,163,77,0.14);
+    --red:#e08575;
+    --red-bg:rgba(224,133,117,0.16);
+    --slate:#8fae9c;
+    --slate-bg:rgba(143,174,156,0.16);
+    --blue:#7fb3d5;
+    --blue-bg:rgba(127,179,213,0.16);
+    --shadow:0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    max-width:680px;
+    margin:0 auto;
+    padding:52px 22px 72px;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(2.1rem,5vw,2.9rem);
+    line-height:1.05;
+    margin:0 0 14px;
+    text-wrap:balance;
+  }
+  .dek{
+    font-size:1.03rem;
+    color:var(--ink-soft);
+    max-width:58ch;
+    line-height:1.6;
+    margin:0 0 20px;
+  }
+  .meta-row{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    display:flex;
+    gap:8px;
+    align-items:center;
+    padding-bottom:28px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .category{
+    margin-top:34px;
+  }
+  .category h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.22rem;
+    margin:0 0 14px;
+  }
+
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-left:3px solid var(--slate);
+    border-radius:8px;
+    padding:16px 18px;
+    box-shadow:var(--shadow);
+    margin-bottom:12px;
+  }
+  .card.status-open{ border-left-color:var(--accent); }
+  .card.status-acked{ border-left-color:var(--green); }
+  .card.status-flagged{ border-left-color:var(--red); }
+  .card.status-requested{ border-left-color:var(--accent-2); }
+
+  .desc{
+    font-size:0.98rem;
+    line-height:1.55;
+    margin:0 0 8px;
+  }
+  .devnote{
+    font-size:0.88rem;
+    line-height:1.5;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+    padding-left:12px;
+    border-left:2px solid var(--line);
+  }
+  .devnote .who{ color:var(--green); font-weight:600; }
+
+  .card-foot{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .who{ color:var(--ink); font-weight:500; }
+  .pill{
+    font-size:11px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:3px 9px;
+    border-radius:100px;
+    margin-left:auto;
+  }
+  .pill-open{ background:var(--amber-bg); color:var(--accent); }
+  .pill-acked{ background:var(--green-bg); color:var(--green); }
+  .pill-flagged{ background:var(--red-bg); color:var(--red); }
+  .pill-requested{ background:var(--slate-bg); color:var(--slate); }
+  .pill-implemented{ background:var(--blue-bg); color:var(--blue); }
+  .agree{ font-variant-numeric:tabular-nums; }
+
+  .poll-note{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin:16px 0 10px;
+  }
+  .poll-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .poll-list li{
+    background:var(--paper-raised);
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:0.92rem;
+  }
+  .poll-list .check{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+  .poll-list li.done .check{ color:var(--blue); }
+  .poll-list li .pill{ margin-left:auto; }
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+  .dotmark{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .dotmark.open{ background:var(--accent); }
+  .dotmark.acked{ background:var(--green); }
+  .dotmark.flagged{ background:var(--red); }
+  .dotmark.requested{ background:var(--accent-2); }
+
+  .foot{
+    margin-top:48px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-size:0.92rem;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .foot strong{ color:var(--ink); }
+
+  @media (max-width:480px){
+    .pill{ margin-left:0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">Community Status Board</p>
+    <h1>The Watchtower</h1>
+    <p class="dek">A quick look at what's going to be flagged to the devs from the UI update, the new Owl Search, and the combat rebalance. Check here before posting a duplicate — and drop anything new in the thread below.</p>
+    <div class="meta-row">
+      <span>Last updated Sep 4, 2026</span>
+    </div>
+    <div class="legend">
+      <span><i class="dotmark open"></i>Open</span>
+      <span><i class="dotmark acked"></i>Dev acknowledged</span>
+      <span><i class="dotmark flagged"></i>Flagged</span>
+      <span><i class="dotmark requested"></i>Requested</span>
+      <span>✅ Implemented</span>
+    </div>
+  </header>
+
+  <section class="category">
+    <h2>Bugs</h2>
+    <article class="card status-open">
+      <p class="desc">World Boss tally boards are off — the <strong>global</strong> tally is missing a number in the sequence. Personal tally looks correct.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by GmaTeresa</span>
+        <span class="agree">👍 1</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">Strongholds still won't give swords after defeating the boss — you have to go to a specific stronghold to get one.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Arthus</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">Stronghold sword rewards aren't scaling with kills — expected a stronger sword the more you kill past the required 10, but still getting basic low-power swords after 70+ kills.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Arthus</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">A few players have separately reported they're unable to start a new Bounty.</p>
+      <div class="card-foot">
+        <span class="who">Multiple reports</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">Charge attacks miss constantly — charging then releasing often triggers a jump or dodge instead of the attack, especially with any movement on release.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Spirit007</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">Daily "kill any 3 monsters" population control quest isn't tracking progress — several kills of each type logged with no progression.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Spirit007</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+  </section>
+
+  <section class="category">
+    <h2>UI &amp; Readability</h2>
+    <article class="card status-open">
+      <p class="desc">No way to see gold, ore, and ether amounts on the front of the character page anymore.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Arthus</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">The New Search feature (trade a Surge Seed for a new owl) isn't explained anywhere in-app — took trial and error for people to figure out how it works. Once found, players say it works well.</p>
+      <div class="card-foot">
+        <span class="who">Community thread</span>
+        <span class="pill pill-open">Not self-explanatory</span>
+      </div>
+    </article>
+
+    <article class="card status-acked">
+      <p class="desc">Item labels are printed too small to read comfortably.</p>
+      <p class="devnote"><span class="who">RayBlade (dev):</span> "Yeah, agreed! We'll be looking into that."</p>
+      <div class="card-foot">
+        <span class="who">Spotted by GmaTeresa</span>
+        <span class="agree">👍 1</span>
+        <span class="pill pill-acked">Dev acknowledged</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">Amounts — gems, gold, prices — are too small to read, especially in the store. Hard to tell what you're getting for the price, or whether you can afford an upgrade.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Ladymidnight</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
+    <article class="card status-open">
+      <p class="desc">The white background flattens reward effects — the shine and sparkle on chest reveals, and the stars around them, disappear into the white.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Ladymidnight</span>
+        <span class="agree">👍 2</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+  </section>
+
+  <section class="category">
+    <h2>Accessibility</h2>
+    <article class="card status-flagged">
+      <p class="desc">The screen flickers light-to-dark during the loading spinner. For anyone with photosensitivity, that's a real seizure/migraine risk — worth flagging to the devs as a priority.</p>
+      <div class="card-foot">
+        <span class="who">Spotted by Nevermore</span>
+        <span class="agree">👍 3</span>
+        <span class="pill pill-flagged">Flagged</span>
+      </div>
+    </article>
+  </section>
+
+  <section class="category">
+    <h2>Feature Requests</h2>
+    <article class="card status-requested">
+      <p class="desc">A dark mode option — which would also solve the white-background and flicker issues above. Several players say the bright screen is hard on the eyes at any brightness setting, especially playing at night.</p>
+      <div class="card-foot">
+        <span class="who">Requested by Nevermore</span>
+        <span class="agree">👍 2</span>
+        <span class="pill pill-requested">Requested</span>
+      </div>
+    </article>
+
+    <p class="poll-note">Plus these, from the community:</p>
+    <ul class="poll-list">
+      <li class="done"><span class="check">✅</span> New owl request (1×/day) if yours goes missing<span class="pill pill-implemented">Implemented</span></li>
+      <li><span class="check">▢</span> Player trading system<span class="pill pill-requested">Requested</span></li>
+      <li><span class="check">▢</span> Skill tree for character progression<span class="pill pill-requested">Requested</span></li>
+      <li><span class="check">▢</span> Socket &amp; enchanting system for gear<span class="pill pill-requested">Requested</span></li>
+      <li><span class="check">▢</span> Difficulty slider / child mode toggle<span class="pill pill-requested">Requested</span></li>
+      <li><span class="check">▢</span> Less tedious resource collection (no more spam-clicking buildings)<span class="pill pill-requested">Requested</span></li>
+      <li class="done"><span class="check">✅</span> Viewable quest dialogue log/journal<span class="pill pill-implemented">Implemented</span></li>
+      <li><span class="check">▢</span> Fortress key color-coding (each fortress gets its own key color)<span class="pill pill-requested">Requested</span></li>
+      <li><span class="check">▢</span> Confirm-before-use prompt on items (avoid accidentally using a Golden Apple, etc.)<span class="pill pill-requested">Requested</span></li>
+    </ul>
+  </section>
+
+  <footer class="foot">
+    <p><strong>Don't see your issue here?</strong> Reply in the thread and it'll get added. This board will get updated as fixes ship or new things come up.</p>
+  </footer>
+</div>
+
+</body>
+</html>
