@@ -115,7 +115,7 @@
 
   .stats{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
+    grid-template-columns:repeat(6,1fr);
     gap:1px;
     background:var(--line);
     border:1px solid var(--line);
@@ -278,11 +278,12 @@
   </header>
 
   <section class="stats">
-    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Bugs</span></div>
-    <div class="stat"><span class="stat-num">5</span><span class="stat-label">Readability</span></div>
+    <div class="stat"><span class="stat-num">7</span><span class="stat-label">Bugs</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Readability</span></div>
     <div class="stat"><span class="stat-num">1</span><span class="stat-label">Accessibility</span></div>
     <div class="stat"><span class="stat-num">8</span><span class="stat-label">Requested</span></div>
     <div class="stat"><span class="stat-num">2</span><span class="stat-label">Implemented</span></div>
+    <div class="stat"><span class="stat-num">1</span><span class="stat-label">Working well</span></div>
   </section>
 
   <section class="category">
@@ -335,10 +336,28 @@
         <span class="pill pill-open">Open</span>
       </div>
     </article>
+
+    <article class="card status-open">
+      <p class="quote">"It doesn't count my owl bait as well anymore. I earned like 7 and it said 7/5, then it all disappeared to make my quest instead of leaving 2 extra."</p>
+      <div class="card-foot">
+        <span class="who">EmptyBee</span><span class="dot">·</span><span class="when">10:38 AM</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
   </section>
 
   <section class="category">
     <h2>UI &amp; Readability</h2>
+    <article class="card status-open">
+      <p class="quote">"Hard to read."</p>
+      <p class="reply aside">Screenshot of the Story/quest panel — quest dialogue and objective text renders very small and low-contrast against the background.</p>
+      <div class="card-foot">
+        <span class="who">EmptyBee</span><span class="dot">·</span><span class="when">10:38 AM</span>
+        <span class="agree">👍 1</span>
+        <span class="pill pill-open">Open</span>
+      </div>
+    </article>
+
     <article class="card status-open">
       <p class="quote">"I miss the ability to see your gold, ore, and ether amounts on the front of your character page."</p>
       <div class="card-foot">
@@ -427,6 +446,16 @@
       <li><span class="check">▢</span> Fortress key color-coding (each fortress gets its own key color)<span class="pill pill-requested">Requested</span></li>
       <li><span class="check">▢</span> Confirm-before-use prompt on items (avoid accidentally using a Golden Apple, etc.)<span class="pill pill-requested">Requested</span></li>
     </ul>
+  </section>
+
+  <section class="category">
+    <h2>What's Working</h2>
+    <article class="card status-acked">
+      <p class="quote">"I like the new building designs."</p>
+      <div class="card-foot">
+        <span class="who">EmptyBee</span><span class="dot">·</span><span class="when">10:38 AM</span>
+      </div>
+    </article>
   </section>
 </div>
 
